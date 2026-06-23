@@ -1,0 +1,176 @@
+/* ============================================================
+   ADMIN PANEL — Estilos adicionales
+   Importar en main.jsx junto con index.css
+   ============================================================ */
+
+/* ── Login ───────────────────────────────────────────────────── */
+.admin-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--stone);
+}
+.admin-login__card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.admin-login__card h1 {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: var(--terra-dark);
+}
+.admin-login__card p { color: var(--muted); font-size: .9rem; }
+.admin-login__card form { display: flex; flex-direction: column; gap: 1rem; }
+
+/* ── Layout ──────────────────────────────────────────────────── */
+.admin { min-height: 100vh; background: var(--stone); }
+
+.admin__header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--ink);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 60px;
+  box-shadow: var(--shadow);
+}
+.admin__logo { font-size: 1rem; font-weight: 600; color: var(--gold); }
+.admin__header-actions { display: flex; gap: .75rem; }
+
+.admin__main {
+  padding: 2rem 1.5rem;
+}
+.admin__main h2 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  color: var(--ink);
+}
+.admin__loading { color: var(--muted); padding: 2rem 0; }
+
+/* ── Table ───────────────────────────────────────────────────── */
+.admin-table-wrap {
+  overflow-x: auto;
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .9rem;
+}
+.admin-table th {
+  text-align: left;
+  padding: .85rem 1rem;
+  background: var(--stone);
+  color: var(--muted);
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-weight: 600;
+  border-bottom: 1px solid var(--stone-dark);
+}
+.admin-table td {
+  padding: .85rem 1rem;
+  border-bottom: 1px solid var(--stone);
+  vertical-align: middle;
+}
+.admin-table tbody tr:last-child td { border-bottom: none; }
+.admin-table tbody tr:hover td { background: var(--stone); }
+
+.admin-table__row--inactive td { opacity: .5; }
+.admin-table__id    { color: var(--muted); font-size: .8rem; width: 48px; }
+.admin-table__price { font-weight: 700; color: var(--terra); }
+.admin-table__actions { display: flex; gap: .5rem; }
+.admin-table__thumb {
+  width: 56px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+.admin-badge {
+  display: inline-block;
+  margin-left: .4rem;
+  padding: .1rem .5rem;
+  background: var(--gold);
+  color: var(--ink);
+  border-radius: 50px;
+  font-size: .7rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: .25rem .65rem;
+  border-radius: 50px;
+  font-size: .75rem;
+  font-weight: 600;
+}
+.status-pill--on  { background: #e8f5e9; color: #2e7d32; }
+.status-pill--off { background: #fde8e8; color: #c0392b; }
+
+/* ── Form grid ───────────────────────────────────────────────── */
+.admin-form { gap: 1.25rem; }
+.admin-form__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.admin-form__full { grid-column: 1 / -1; }
+.admin-form__preview {
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--stone-dark);
+}
+.admin-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: .75rem;
+  padding-top: .5rem;
+  border-top: 1px solid var(--stone-dark);
+}
+.admin-checkbox {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .9rem;
+  cursor: pointer;
+  color: var(--ink-soft);
+}
+.admin-checkbox input { width: 16px; height: 16px; cursor: pointer; }
+
+/* ── Danger button ───────────────────────────────────────────── */
+.btn--danger {
+  background: #fde8e8;
+  color: #c0392b;
+  border: 1px solid #f5c6c6;
+}
+.btn--danger:hover { background: #c0392b; color: var(--white); }
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .admin-form__grid { grid-template-columns: 1fr; }
+  .admin__header    { padding: 0 1rem; }
+  .admin-table th:nth-child(5),
+  .admin-table td:nth-child(5),
+  .admin-table th:nth-child(6),
+  .admin-table td:nth-child(6) { display: none; }
+}

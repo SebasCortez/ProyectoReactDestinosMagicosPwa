@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sin conexión — Destinos Mágicos</title>
+  <style>
+    :root {
+      --gold:  #C9A84C;
+      --terra: #7A3B2E;
+      --ink:   #1A1208;
+      --stone: #F5F0E8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--ink);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    .card {
+      max-width: 420px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 20px;
+      padding: 3rem 2rem;
+    }
+    .icon { font-size: 4rem; margin-bottom: 1.5rem; }
+    .logo { font-size: 1.1rem; color: var(--gold); font-weight: 700; margin-bottom: 2rem; }
+    h1 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--gold); }
+    p  { font-size: 1rem; color: rgba(255,255,255,.75); line-height: 1.6; margin-bottom: 1rem; }
+    .tip {
+      background: rgba(201,168,76,.1);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 8px 8px 0;
+      padding: .75rem 1rem;
+      font-size: .9rem;
+      color: rgba(255,255,255,.7);
+      margin: 1.5rem 0;
+      text-align: left;
+    }
+    .tip strong { color: var(--gold); }
+    button {
+      background: var(--gold);
+      color: var(--ink);
+      border: none;
+      border-radius: 10px;
+      padding: .85rem 2rem;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s;
+      margin-top: .5rem;
+    }
+    button:hover { background: #e8c97a; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">🗺️</div>
+    <div class="logo">✦ Destinos Mágicos</div>
+    <h1>Sin conexión a internet</h1>
+    <p>Parece que no tienes conexión en este momento. Algunos contenidos de la app pueden no estar disponibles.</p>
+
+    <div class="tip">
+      <strong>💡 Lo que puedes hacer offline:</strong><br/>
+      Ver tours que ya consultaste antes y revisar tu carrito. Los precios y reservas requieren conexión.
+    </div>
+
+    <p>Cuando recuperes la conexión, la app se actualizará automáticamente.</p>
+    <button onclick="window.location.reload()">🔄 Reintentar</button>
+  </div>
+</body>
+</html>

@@ -11,8 +11,7 @@ export default defineConfig({
     ],
     proxy: {
       '/api': {
-        // 2. Cambiamos localhost por tu IP real para que el celular alcance el backend
-        target: 'http://10.45.113.45:4000',
+        target: 'http://127.0.0.1:4000',
         changeOrigin: true,
       },
     },

@@ -1,8 +1,8 @@
 import { useLang } from '../context/LangContext';
 
-const PHONE    = '+51 999 999 999';
-const EMAIL    = 'info@destinosmagicos.com';
-const WA_NUM   = '51999999999';
+const PHONE    = '+51 984 556 834';
+const EMAIL    = 'elenatour98@hotmail.com';
+const WA_NUM   = '51984556834';
 
 export default function Contact() {
   const { t } = useLang();

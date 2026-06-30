@@ -15,7 +15,7 @@ const ICONS = {
 
 export default function Activities() {
   const { t } = useLang();
-  const WA_NUMBER = '51999999999'; // cambiar en producción
+  const WA_NUMBER = '51984556834'; // cambiar en producción
 
   return (
     <section id="activities" className="activities section">

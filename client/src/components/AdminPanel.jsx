@@ -1,15 +1,43 @@
 import { useState, useEffect } from 'react';
 import { toursApi, authApi } from '../services/api';
+import {
+  validateUsername, validatePassword,
+  validateRequiredText, validatePrecio, validateUrl, validateForm
+} from '../utils/validators';
 
 /* ── Login form ─────────────────────────────────────────────── */
 function LoginForm({ onLogin }) {
-  const [form, setForm]     = useState({ username: '', password: '' });
-  const [error, setError]   = useState(null);
+  const [form, setForm]       = useState({ username: '', password: '' });
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [touched, setTouched] = useState({});
+  const [error, setError]     = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const LOGIN_VALIDATORS = { username: validateUsername, password: validatePassword };
+
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setForm(f => ({ ...f, [name]: value }));
+    if (touched[name]) {
+      setFieldErrors(prev => ({ ...prev, [name]: LOGIN_VALIDATORS[name](value) }));
+    }
+  }
+
+  function handleBlur(e) {
+    const { name, value } = e.target;
+    setTouched(t => ({ ...t, [name]: true }));
+    setFieldErrors(prev => ({ ...prev, [name]: LOGIN_VALIDATORS[name](value) }));
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
+
+    const { errors, isValid } = validateForm(form, LOGIN_VALIDATORS);
+    setFieldErrors(errors);
+    setTouched({ username: true, password: true });
+    if (!isValid) return;
+
     setLoading(true);
     try {
       const { token } = await authApi.login(form);
@@ -27,23 +55,34 @@ function LoginForm({ onLogin }) {
       <div className="admin-login__card">
         <h1>✦ Admin</h1>
         <p>Destinos Mágicos — Panel de gestión</p>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} noValidate>
           <div className="form-group">
             <label>Usuario</label>
             <input
+              name="username"
               value={form.username}
-              onChange={e => setForm(f => ({ ...f, username: e.target.value }))}
-              required autoFocus
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={touched.username ? (fieldErrors.username ? 'input--error' : 'input--valid') : ''}
+              autoFocus
             />
+            {touched.username && fieldErrors.username && (
+              <span className="field-error">{fieldErrors.username}</span>
+            )}
           </div>
           <div className="form-group">
             <label>Contraseña</label>
             <input
               type="password"
+              name="password"
               value={form.password}
-              onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-              required
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={touched.password ? (fieldErrors.password ? 'input--error' : 'input--valid') : ''}
             />
+            {touched.password && fieldErrors.password && (
+              <span className="field-error">{fieldErrors.password}</span>
+            )}
           </div>
           {error && <p className="form-error">{error}</p>}
           <button type="submit" className="btn btn--primary btn--full" disabled={loading}>
@@ -63,8 +102,17 @@ const EMPTY_TOUR = {
   data_duration: 'fullday', activo: true,
 };
 
+const TOUR_VALIDATORS = {
+  titulo:       v => validateRequiredText(v, 'El título', 150),
+  descripcion:  v => validateRequiredText(v, 'La descripción', 500),
+  precio_desde: validatePrecio,
+  imagen_url:   v => validateUrl(v, false),
+};
+
 function TourForm({ initial, onSave, onCancel }) {
   const [form, setForm] = useState(initial || EMPTY_TOUR);
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [touched, setTouched] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -72,12 +120,38 @@ function TourForm({ initial, onSave, onCancel }) {
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
-    setForm(f => ({ ...f, [name]: type === 'checkbox' ? checked : value }));
+    const newValue = type === 'checkbox' ? checked : value;
+    setForm(f => ({ ...f, [name]: newValue }));
+    if (touched[name] && TOUR_VALIDATORS[name]) {
+      setFieldErrors(prev => ({ ...prev, [name]: TOUR_VALIDATORS[name](newValue) }));
+    }
+  }
+
+  function handleBlur(e) {
+    const { name, value } = e.target;
+    if (!TOUR_VALIDATORS[name]) return;
+    setTouched(t => ({ ...t, [name]: true }));
+    setFieldErrors(prev => ({ ...prev, [name]: TOUR_VALIDATORS[name](value) }));
+  }
+
+  function inputClass(name) {
+    if (!touched[name]) return '';
+    return fieldErrors[name] ? 'input--error' : 'input--valid';
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
+
+    const { errors, isValid } = validateForm(form, TOUR_VALIDATORS);
+    setFieldErrors(errors);
+    setTouched(t => ({ ...t, titulo: true, descripcion: true, precio_desde: true, imagen_url: true }));
+
+    if (!isValid) {
+      setError('Revisa los campos marcados antes de guardar.');
+      return;
+    }
+
     setLoading(true);
     try {
       if (isEdit) {
@@ -100,15 +174,27 @@ function TourForm({ initial, onSave, onCancel }) {
           <h2>{isEdit ? `Editar: ${initial.titulo}` : 'Nuevo Tour'}</h2>
           <button className="icon-btn" onClick={onCancel}>✕</button>
         </div>
-        <form className="modal__body admin-form" onSubmit={handleSubmit}>
+        <form className="modal__body admin-form" onSubmit={handleSubmit} noValidate>
           <div className="admin-form__grid">
             <div className="form-group admin-form__full">
               <label>Título *</label>
-              <input name="titulo" value={form.titulo} onChange={handleChange} required />
+              <input
+                name="titulo" value={form.titulo}
+                onChange={handleChange} onBlur={handleBlur}
+                className={inputClass('titulo')}
+              />
+              {touched.titulo && fieldErrors.titulo && <span className="field-error">{fieldErrors.titulo}</span>}
             </div>
             <div className="form-group admin-form__full">
               <label>Descripción corta *</label>
-              <textarea name="descripcion" value={form.descripcion} onChange={handleChange} rows={2} required />
+              <textarea
+                name="descripcion" value={form.descripcion}
+                onChange={handleChange} onBlur={handleBlur}
+                className={inputClass('descripcion')}
+                rows={2} maxLength={500}
+              />
+              <span className="char-counter">{form.descripcion.length}/500</span>
+              {touched.descripcion && fieldErrors.descripcion && <span className="field-error">{fieldErrors.descripcion}</span>}
             </div>
             <div className="form-group admin-form__full">
               <label>Detalle / Itinerario</label>
@@ -117,7 +203,13 @@ function TourForm({ initial, onSave, onCancel }) {
 
             <div className="form-group">
               <label>Precio desde (USD) *</label>
-              <input type="number" name="precio_desde" value={form.precio_desde} onChange={handleChange} min="0" step="0.01" required />
+              <input
+                type="number" name="precio_desde" value={form.precio_desde}
+                onChange={handleChange} onBlur={handleBlur}
+                className={inputClass('precio_desde')}
+                min="0" step="0.01"
+              />
+              {touched.precio_desde && fieldErrors.precio_desde && <span className="field-error">{fieldErrors.precio_desde}</span>}
             </div>
             <div className="form-group">
               <label>Duración</label>
@@ -157,7 +249,13 @@ function TourForm({ initial, onSave, onCancel }) {
             </div>
             <div className="form-group admin-form__full">
               <label>URL de imagen</label>
-              <input name="imagen_url" value={form.imagen_url} onChange={handleChange} placeholder="https://…" />
+              <input
+                name="imagen_url" value={form.imagen_url}
+                onChange={handleChange} onBlur={handleBlur}
+                className={inputClass('imagen_url')}
+                placeholder="https://…"
+              />
+              {touched.imagen_url && fieldErrors.imagen_url && <span className="field-error">{fieldErrors.imagen_url}</span>}
             </div>
             {isEdit && (
               <div className="form-group">
@@ -169,7 +267,7 @@ function TourForm({ initial, onSave, onCancel }) {
             )}
           </div>
 
-          {form.imagen_url && (
+          {form.imagen_url && !fieldErrors.imagen_url && (
             <img
               src={form.imagen_url}
               alt="Preview"
